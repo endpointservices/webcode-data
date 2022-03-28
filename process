@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const EXPORT_TO = '/tmp/all_versions_exported'
+const dataset = [];
+
+fs.readdir(EXPORT_TO, (err, files) => {
+  files.forEach(file => {
+    // 0018.25-Mar-2022.87e921c8ab35c52523049a9fa05abd395a34cc09.us-central1.json
+    const match = /(?<num>\d*)\.(?<date>[^.]*)\.(?<commit>[^.]*)\.(?<name>[^.]*)/.exec(file)
+    const num = match.groups.num;
+    const date = match.groups.date;
+    const commit = match.groups.commit;
+    const name = match.groups.name;
+    const data = JSON.parse(fs.readFileSync(EXPORT_TO + '/' + file))
+
+
+    Object.keys(data.browsers).forEach(browser => data.browsers[browser].pages.forEach(page => {
+        if (page.url.startsWith("https://"))
+            dataset.push({
+                namespace: browser,
+                url: page.url,
+                date,
+                name,
+                ...page.metrics
+            })
+    }))
+  });
+  fs.writeFileSync("summary/usage.json", JSON.stringify(dataset, null, 2))
+});
