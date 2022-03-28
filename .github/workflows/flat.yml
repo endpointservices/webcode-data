@@ -31,3 +31,8 @@ jobs:
         with:
           http_url: https://webcode.run/regions/us-central1/observablehq.com/@tomlarkworthy/tarot-backend;variables
           downloaded_filename: data/tarot.us-central1.json
+      - name: Fetch data
+        uses: githubocto/flat@v3
+        with:
+          http_url: https://webcode.run/regions/europe-west4/observablehq.com/@tomlarkworthy/tarot-backend;variables
+          downloaded_filename: data/tarot.europe-west4.json
